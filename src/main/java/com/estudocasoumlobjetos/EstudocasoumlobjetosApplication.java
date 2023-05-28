@@ -13,6 +13,7 @@ import com.estudocasoumlobjetos.domain.Cidade;
 import com.estudocasoumlobjetos.domain.Cliente;
 import com.estudocasoumlobjetos.domain.Endereco;
 import com.estudocasoumlobjetos.domain.Estado;
+import com.estudocasoumlobjetos.domain.ItemPedido;
 import com.estudocasoumlobjetos.domain.Pagamento;
 import com.estudocasoumlobjetos.domain.PagamentoComBoleto;
 import com.estudocasoumlobjetos.domain.PagamentoComCartao;
@@ -25,6 +26,7 @@ import com.estudocasoumlobjetos.repositories.CidadeRepository;
 import com.estudocasoumlobjetos.repositories.ClienteRepository;
 import com.estudocasoumlobjetos.repositories.EnderecoRepository;
 import com.estudocasoumlobjetos.repositories.EstadoRepository;
+import com.estudocasoumlobjetos.repositories.ItemPedidoRepository;
 import com.estudocasoumlobjetos.repositories.PagamentoRepository;
 import com.estudocasoumlobjetos.repositories.PedidoRepository;
 import com.estudocasoumlobjetos.repositories.ProdutoRepository;
@@ -55,6 +57,9 @@ public class EstudocasoumlobjetosApplication implements CommandLineRunner {
 	
 	@Autowired
 	private PedidoRepository pedidoRepository;
+	
+	@Autowired
+	private ItemPedidoRepository itemPedidoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(EstudocasoumlobjetosApplication.class, args);
@@ -109,13 +114,28 @@ public class EstudocasoumlobjetosApplication implements CommandLineRunner {
 		
 		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
 		
+		ItemPedido ip1 = new ItemPedido(ped1, p1, 0.00, 1, 2000.00);
+		ItemPedido ip2 = new ItemPedido(ped1, p3, 0.00, 2, 80.00);
+		ItemPedido ip3 = new ItemPedido(ped2, p2, 100.00, 1, 800.00);
+		
+		ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+		ped2.getItens().addAll(Arrays.asList(ip3));
+		
+		p1.getItens().addAll(Arrays.asList(ip1));
+		p2.getItens().addAll(Arrays.asList(ip3));
+		p3.getItens().addAll(Arrays.asList(ip2));
+		
+		
+		
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
 		produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
 		estadoRepository.saveAll(Arrays.asList(e1, e2));
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepositoy.saveAll(Arrays.asList(end1, end2));
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pag1, pag2));
+		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
 	}
 
 }
