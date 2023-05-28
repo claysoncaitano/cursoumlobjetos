@@ -1,5 +1,6 @@
 package com.estudocasoumlobjetos;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import com.estudocasoumlobjetos.domain.Cidade;
 import com.estudocasoumlobjetos.domain.Cliente;
 import com.estudocasoumlobjetos.domain.Endereco;
 import com.estudocasoumlobjetos.domain.Estado;
+import com.estudocasoumlobjetos.domain.Pagamento;
+import com.estudocasoumlobjetos.domain.PagamentoComBoleto;
+import com.estudocasoumlobjetos.domain.PagamentoComCartao;
+import com.estudocasoumlobjetos.domain.Pedido;
 import com.estudocasoumlobjetos.domain.Produto;
+import com.estudocasoumlobjetos.domain.enums.EstadoPagamento;
 import com.estudocasoumlobjetos.domain.enums.TipoCliente;
 import com.estudocasoumlobjetos.repositories.CategoriaRepository;
 import com.estudocasoumlobjetos.repositories.CidadeRepository;
 import com.estudocasoumlobjetos.repositories.ClienteRepository;
 import com.estudocasoumlobjetos.repositories.EnderecoRepository;
 import com.estudocasoumlobjetos.repositories.EstadoRepository;
+import com.estudocasoumlobjetos.repositories.PagamentoRepository;
+import com.estudocasoumlobjetos.repositories.PedidoRepository;
 import com.estudocasoumlobjetos.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -41,6 +49,12 @@ public class EstudocasoumlobjetosApplication implements CommandLineRunner {
 	
 	@Autowired
 	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
+	
+	@Autowired
+	private PedidoRepository pedidoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(EstudocasoumlobjetosApplication.class, args);
@@ -81,7 +95,19 @@ public class EstudocasoumlobjetosApplication implements CommandLineRunner {
 		p1.getCategorias().addAll(Arrays.asList(cat1));
 		p2.getCategorias().addAll(Arrays.asList(cat1, cat2));
 		p3.getCategorias().addAll(Arrays.asList(cat1));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 	
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, end1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, end2);
+		
+		Pagamento pag1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pag1);
+		
+		Pagamento pag2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		ped2.setPagamento(pag2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
 		
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
 		produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
@@ -89,6 +115,7 @@ public class EstudocasoumlobjetosApplication implements CommandLineRunner {
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepositoy.saveAll(Arrays.asList(end1, end2));
+		pagamentoRepository.saveAll(Arrays.asList(pag1, pag2));
 	}
 
 }
